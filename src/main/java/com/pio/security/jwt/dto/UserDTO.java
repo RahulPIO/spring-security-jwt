@@ -8,7 +8,8 @@ public class UserDTO {
     private String password;
     private UserRole role;
 
-    public UserDTO() {}
+    public UserDTO() {
+    }
 
     public UserDTO(int id, String username, String password, UserRole role) {
         this.id = id;

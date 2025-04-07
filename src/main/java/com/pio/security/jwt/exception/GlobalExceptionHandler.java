@@ -6,14 +6,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> noSuchElementException(NoSuchElementException e) {
-        return ResponseEntity.status(404).body(e.getMessage());
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> noSuchElementException(UserNotFoundException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
@@ -22,5 +21,15 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User doesn't exist");
         }
         return ResponseEntity.status(500).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> invalidCredentialsException(InvalidCredentialsException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> userAlreadyExistsException(UserAlreadyExistsException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 }
