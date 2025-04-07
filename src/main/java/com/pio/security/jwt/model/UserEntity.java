@@ -1,5 +1,7 @@
 package com.pio.security.jwt.model;
 
+import com.pio.security.jwt.constant.UserRole;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,15 +10,14 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
-    @Column(name="username",unique = true)
+    @Column(unique = true)
     private String username;
     private String password;
-    private String role;
+    private UserRole role;
 
-    public UserEntity() {
-    }
+    public UserEntity() {}
 
-    public UserEntity(int userId, String username, String password, String role) {
+    public UserEntity(int userId, String username, String password, UserRole role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -47,11 +48,11 @@ public class UserEntity {
         this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 }

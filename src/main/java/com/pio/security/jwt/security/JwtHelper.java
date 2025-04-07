@@ -1,9 +1,9 @@
 package com.pio.security.jwt.security;
 
-import com.pio.security.jwt.constant.SecurityConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +14,10 @@ import java.util.function.Function;
 
 @Component
 public class JwtHelper {
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
+    @Value("${JWT_TOKEN_VALIDITY_IN_SECONDS}")
+    private int JWT_TOKEN_VALIDITY_IN_SECONDS;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -29,7 +33,7 @@ public class JwtHelper {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(SecurityConstant.SECRET_KEY).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -44,16 +48,13 @@ public class JwtHelper {
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstant.JWT_TOKEN_VALIDITY_IN_SECONDS * 1000))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstant.SECRET_KEY).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY_IN_SECONDS * 1000))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean isTokenValidated(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
-
 }

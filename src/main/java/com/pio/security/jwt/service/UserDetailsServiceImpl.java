@@ -1,5 +1,6 @@
 package com.pio.security.jwt.service;
 
+import com.pio.security.jwt.exception.UserNotFoundException;
 import com.pio.security.jwt.model.UserEntity;
 import com.pio.security.jwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserEntity userEntity = null;
         Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User Not Exists With username " + username);
+            throw new UserNotFoundException(404,"User Not Exists With username " + username);
         }
         userEntity = optionalUser.get();
         return org.springframework.security.core.userdetails.User.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .roles(userEntity.getRole()).build();
+                .roles(userEntity.getRole().toString()).build();
     }
 }

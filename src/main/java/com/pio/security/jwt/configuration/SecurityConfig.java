@@ -1,5 +1,6 @@
 package com.pio.security.jwt.configuration;
 
+import com.pio.security.jwt.constant.UserRole;
 import com.pio.security.jwt.security.JwtAuthenticationEntryPoint;
 import com.pio.security.jwt.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,13 @@ public class SecurityConfig {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/auth/login", "/user/register","/actuator/health/**","/actuator/prometheus").permitAll()
                 .antMatchers("/user/**").authenticated()
-                .antMatchers("/actuator/**").hasRole("Admin").anyRequest().authenticated()
-                .and().exceptionHandling().authenticationEntryPoint(point).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.toString()).anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(point)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

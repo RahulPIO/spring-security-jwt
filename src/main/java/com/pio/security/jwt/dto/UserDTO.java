@@ -1,15 +1,16 @@
 package com.pio.security.jwt.dto;
 
+import com.pio.security.jwt.constant.UserRole;
+
 public class UserDTO {
     private int id;
     private String username;
     private String password;
-    private String role;
+    private UserRole role;
 
-    public UserDTO() {
-    }
+    public UserDTO() {}
 
-    public UserDTO(int id, String username, String password, String role) {
+    public UserDTO(int id, String username, String password, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -40,11 +41,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 }

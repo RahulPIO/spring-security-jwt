@@ -1,5 +1,6 @@
 package com.pio.security.jwt.security;
 
+import com.pio.security.jwt.exception.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +21,7 @@ public class JwtUtility {
         try {
             authenticationManager.authenticate(authenticationToken);
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("Invalid Credentials");
+            throw new InvalidCredentialsException(400,"Invalid Credentials");
         }
     }
 }

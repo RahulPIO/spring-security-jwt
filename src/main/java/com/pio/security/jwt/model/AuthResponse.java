@@ -1,12 +1,10 @@
 package com.pio.security.jwt.model;
 
 public class AuthResponse {
-
     private String jwtToken;
     private String username;
 
-    public AuthResponse() {
-    }
+    public AuthResponse() {}
 
     public AuthResponse(String jwtToken, String username) {
         this.jwtToken = jwtToken;
