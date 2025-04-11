@@ -59,10 +59,15 @@ public class UserService {
         if (optionalUser.isPresent()) {
             throw new UserAlreadyExistsException(400, "Username already taken");
         }
+        saveUser(userDTO);
+    }
+
+    private String saveUser(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userEntity.setUsername(userDTO.getUsername());
         userEntity.setRole(userDTO.getRole());
         userRepository.save(userEntity);
+        return "User Added Successfully";
     }
 }
