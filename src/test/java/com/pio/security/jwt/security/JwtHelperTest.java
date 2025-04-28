@@ -1,15 +1,15 @@
 package com.pio.security.jwt.security;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.pio.security.jwt.constant.ConstantTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
 @ExtendWith({MockitoExtension.class})
 class JwtHelperTest {
 
@@ -19,28 +19,23 @@ class JwtHelperTest {
     @Mock
     private UserDetails userDetails;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
-    void generateTokenTest() {
-        when(jwtHelper.generateToken(userDetails)).thenReturn("asdvsadvadveradfsdfvad32r23rcvsdv");
+    void shouldGenerateTokenTest() {
+        when(jwtHelper.generateToken(userDetails)).thenReturn(ConstantTest.TEST_JWT_TOKEN);
         String token = jwtHelper.generateToken(userDetails);
-        assertEquals("asdvsadvadveradfsdfvad32r23rcvsdv", token);
+        assertEquals(ConstantTest.TEST_JWT_TOKEN, token);
     }
 
     @Test
-    void isTokenValidatedTrue() {
-        when(jwtHelper.isTokenValidated("asdvsadvadveradfsdfvad32r23rcvsdv",userDetails)).thenReturn(true);
-        boolean isValidated = jwtHelper.isTokenValidated("asdvsadvadveradfsdfvad32r23rcvsdv",userDetails);
+    void shouldIsTokenValidatedTrue() {
+        when(jwtHelper.isTokenValidated(ConstantTest.TEST_JWT_TOKEN, userDetails)).thenReturn(true);
+        boolean isValidated = jwtHelper.isTokenValidated(ConstantTest.TEST_JWT_TOKEN, userDetails);
         assertTrue(isValidated);
     }
 
     @Test
-    void isTokenValidatedFalse() {
-        boolean isValidated = jwtHelper.isTokenValidated("asdvsadvadveradfsdfvad32r23rcvsd",userDetails);
+    void shouldIsTokenValidatedFalse() {
+        boolean isValidated = jwtHelper.isTokenValidated("asdvsadvadveradfsdfvad32r23rcvsd", userDetails);
         assertFalse(isValidated);
     }
 }

@@ -1,5 +1,6 @@
 package com.pio.security.jwt.service;
 
+import com.pio.security.jwt.constant.ConstantTest;
 import com.pio.security.jwt.constant.UserRole;
 import com.pio.security.jwt.dto.UserDTO;
 import com.pio.security.jwt.exception.UserNotFoundException;
@@ -44,57 +45,59 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userDTO = new UserDTO();
-        userDTO.setUsername("abc");
-        userDTO.setPassword("1234");
+        userDTO.setUsername(ConstantTest.TEST_USERNAME);
+        userDTO.setPassword(ConstantTest.TEST_PASSWORD);
         userDTO.setRole(UserRole.ADMIN);
     }
 
     @Test
-    void testAddUserSuccess() {
-        when(userRepository.findByUsername("abc")).thenReturn(Optional.empty());
-        when(passwordEncoder.encode("1234")).thenReturn("abc1234");
+    void shouldAddUserSuccess() {
+        when(userRepository.findByUsername(ConstantTest.TEST_USERNAME)).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(ConstantTest.TEST_PASSWORD)).thenReturn("abc1234");
         userService.addUser(userDTO);
         verify(userRepository).save(userEntityCaptor.capture());
         UserEntity savedUser = userEntityCaptor.getValue();
-        assertEquals("abc",savedUser.getUsername());
+        assertEquals(ConstantTest.TEST_USERNAME,savedUser.getUsername());
         assertEquals("abc1234",savedUser.getPassword());
         assertEquals(UserRole.ADMIN,savedUser.getRole());
+        assertNotNull(savedUser.getPassword());
+        assertNotEquals("",savedUser.getUsername());
     }
 
     @Test
-    void testAddUserFailed() {
-        when(userRepository.findByUsername("abc")).thenThrow(new RuntimeException("Username already taken"));
+    void shouldAddUserFailed() {
+        when(userRepository.findByUsername(ConstantTest.TEST_USERNAME)).thenThrow(new RuntimeException(ConstantTest.ERROR_USERNAME_TAKEN));
         RuntimeException exceptionThrown = assertThrows(RuntimeException.class,() -> {
             userService.addUser(userDTO);
                 });
-        assertEquals("Username already taken",exceptionThrown.getMessage());
+        assertEquals(ConstantTest.ERROR_USERNAME_TAKEN,exceptionThrown.getMessage());
         assertThrowsExactly(RuntimeException.class,() -> {
             userService.addUser(userDTO);
         });
     }
 
     @Test
-    void testGetUserByIdSuccess() {
-        UserEntity userEntity = new UserEntity(1,"abc","abc1234", UserRole.ADMIN);
+    void shouldGetUserByIdSuccess() {
+        UserEntity userEntity = new UserEntity(ConstantTest.TEST_USER_ID, ConstantTest.TEST_USERNAME, ConstantTest.TEST_PASSWORD, UserRole.ADMIN);
         when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
         UserDTO userResult = userService.getUserById(1);
-        assertEquals("abc",userResult.getUsername());
+        assertEquals(ConstantTest.TEST_USERNAME,userResult.getUsername());
         assertEquals(UserRole.ADMIN,userResult.getRole());
     }
 
     @Test
-    void testGetUserByIdFailed() {
+    void shouldGetUserByIdFailed() {
         when(userRepository.findById(1)).thenReturn(Optional.empty());
         UserNotFoundException exceptionThrown = assertThrows(UserNotFoundException.class, () ->{
                     userService.getUserById(1);
                 });
         assertEquals(404,exceptionThrown.getHttpStatus());
-        assertEquals("User not found with id " +1,exceptionThrown.getMessage());
+        assertEquals(ConstantTest.USER_NOT_FOUND +1,exceptionThrown.getMessage());
     }
 
     @Test
-    void testGetAllUserSuccess() {
-        List<UserEntity> userEntityList = Arrays.asList(new UserEntity(1,"abc","123",UserRole.USER),new UserEntity(2,"xyz","789",UserRole.USER));
+    void shouldGetAllUserSuccess() {
+        List<UserEntity> userEntityList = Arrays.asList(new UserEntity(ConstantTest.TEST_USER_ID, ConstantTest.TEST_USERNAME, ConstantTest.TEST_PASSWORD,UserRole.USER),new UserEntity(2,"xyz","789",UserRole.USER));
         when(userRepository.findAll()).thenReturn(userEntityList);
         List<UserDTO> userDTOList = userService.getAllUser();
         assertNotNull(userDTOList);
@@ -107,7 +110,7 @@ class UserServiceTest {
         UserNotFoundException thrownException = assertThrows(UserNotFoundException.class, () -> {
             userService.getAllUser();
         });
-        assertEquals("Not any user exists in Database",thrownException.getMessage());
+        assertEquals(ConstantTest.NOT_ANY_USER_EXIST,thrownException.getMessage());
         assertEquals(404,thrownException.getHttpStatus());
     }
 
@@ -124,12 +127,12 @@ class UserServiceTest {
         Object[] methodArgument = new Object[1];
         methodArgument[0] = userDTO;
         String message = (String)methodCall.invoke(userService,methodArgument);
-        assertEquals("User Added Successfully",message);
+        assertEquals(ConstantTest.USER_ADDED_SUCCESSFULLY,message);
     }
 
     @Test
     void testSaveUserUsingPowermock() throws Exception {
         String message = Whitebox.invokeMethod(userService,"saveUser",userDTO);
-        assertEquals("User Added Successfully",message);
+        assertEquals(ConstantTest.USER_ADDED_SUCCESSFULLY,message);
     }
 }

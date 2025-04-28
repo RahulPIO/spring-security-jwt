@@ -2,6 +2,7 @@ package com.pio.security.jwt.repository;
 
 import com.pio.security.jwt.constant.UserRole;
 import com.pio.security.jwt.model.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,24 +18,25 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    void testSave() {
-        UserEntity user = new UserEntity();
+    private UserEntity user;
+
+    @BeforeEach
+    public void setUp() {
+        user = new UserEntity();
         user.setUsername("Dhanraj");
         user.setPassword("J1234");
         user.setRole(UserRole.USER);
+    }
+
+    @Test
+    void shouldSaveUserSuccessfully() {
         UserEntity resultUser = userRepository.save(user);
         assertEquals(user.getUsername(),resultUser.getUsername());
         assertEquals(user.getPassword(),resultUser.getPassword());
     }
 
     @Test
-    void testFindByUsername() {
-        UserEntity user = new UserEntity();
-        user.setUsername("nitin");
-        user.setPassword("n1234");
-        user.setRole(UserRole.USER);
-
+    void shouldFindByUsernameSuccessfully() {
         Optional<UserEntity> optionalUser = userRepository.findByUsername(user.getUsername());
         assertTrue(optionalUser.isPresent());
         UserEntity resultUser = optionalUser.get();
@@ -43,7 +45,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void testFindByRole() {
+    void shouldFindByRoleSuccessfully() {
         List<UserEntity> userEntityList = userRepository.findByRole(UserRole.ADMIN);
         assertTrue(!userEntityList.isEmpty());
     }

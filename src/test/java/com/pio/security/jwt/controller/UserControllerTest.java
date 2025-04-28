@@ -62,7 +62,7 @@ class UserControllerTest {
      * @throws Exception
      */
     @Test
-    void TestAddUserSuccessful() throws Exception {
+    void shouldAddUserSuccessful() throws Exception {
         doNothing().when(userService).addUser(any(UserDTO.class));
         this.mockMvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isCreated()).andExpect(content().string("User created Successfully!"));
@@ -73,7 +73,7 @@ class UserControllerTest {
      * @throws Exception
      */
     @Test
-    void testGetAllUsers() throws Exception {
+    void shouldGetAllUsers() throws Exception {
         List<UserDTO> userDTOList = Arrays.asList(userDTO);
         when(userService.getAllUser()).thenReturn(userDTOList);
         MvcResult mvcResult = mockMvc.perform(get("/user")).andReturn();
