@@ -1,5 +1,8 @@
 package com.pio.security.jwt.actuator;
 
+import com.pio.security.jwt.constant.ErrorCode;
+import com.pio.security.jwt.constant.ErrorMessage;
+import com.pio.security.jwt.constant.ResponseMessage;
 import com.pio.security.jwt.constant.UserRole;
 import com.pio.security.jwt.model.UserEntity;
 import com.pio.security.jwt.repository.UserRepository;
@@ -32,7 +35,7 @@ public class CustomActuator {
         UserEntity userEntity = null;
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new NoSuchElementException("User Not Found With Id" + id);
+            throw new NoSuchElementException(ErrorMessage.USER_NOT_FOUND_ID + id);
         }
         userEntity = optionalUser.get();
         userEntity.setRole(UserRole.USER);
@@ -48,7 +51,7 @@ public class CustomActuator {
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-        return "User deleted Successfully!";
+        return ResponseMessage.USER_DELETED_SUCCESSFULLY;
     }
 
 }

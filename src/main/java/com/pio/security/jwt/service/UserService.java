@@ -1,5 +1,8 @@
 package com.pio.security.jwt.service;
 
+import com.pio.security.jwt.constant.ErrorCode;
+import com.pio.security.jwt.constant.ErrorMessage;
+import com.pio.security.jwt.constant.ResponseMessage;
 import com.pio.security.jwt.dto.UserDTO;
 import com.pio.security.jwt.exception.UserAlreadyExistsException;
 import com.pio.security.jwt.exception.UserNotFoundException;
@@ -32,7 +35,7 @@ public class UserService {
         List<UserEntity> userEntityList = userRepository.findAll();
         List<UserDTO> userDTOList = userEntityList.stream().map(userEntity -> new UserDTO(userEntity.getUserId(), userEntity.getUsername(), userEntity.getPassword(), userEntity.getRole())).collect(Collectors.toList());
         if (userDTOList.isEmpty()) {
-            throw new UserNotFoundException(404, "Not any user exists in Database");
+            throw new UserNotFoundException(ErrorCode.NOT_FOUND, ErrorMessage.NOT_ANY_USER_EXISTS);
         }
         return userDTOList;
     }
@@ -48,7 +51,7 @@ public class UserService {
             userEntity = optionalUser.get();
             return new UserDTO(userEntity.getUserId(), userEntity.getUsername(), userEntity.getPassword(), userEntity.getRole());
         }
-        throw new UserNotFoundException(404, "User not found with id " + id);
+        throw new UserNotFoundException(ErrorCode.NOT_FOUND, ErrorMessage.USER_NOT_FOUND_ID + id);
     }
 
     /**
@@ -57,12 +60,17 @@ public class UserService {
     public void addUser(UserDTO userDTO) {
         Optional<UserEntity> optionalUser = userRepository.findByUsername(userDTO.getUsername());
         if (optionalUser.isPresent()) {
-            throw new UserAlreadyExistsException(400, "Username already taken");
+            throw new UserAlreadyExistsException(ErrorCode.BAD_REQUEST, ErrorMessage.USER_ALREADY_TAKEN);
         }
+        saveUser(userDTO);
+    }
+
+    private String saveUser(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userEntity.setUsername(userDTO.getUsername());
         userEntity.setRole(userDTO.getRole());
         userRepository.save(userEntity);
+        return ResponseMessage.USER_CREATED_SUCCESSFULLY;
     }
 }

@@ -1,5 +1,6 @@
 package com.pio.security.jwt.actuator;
 
+import com.pio.security.jwt.constant.ResponseMessage;
 import com.pio.security.jwt.security.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +39,8 @@ public class JwtHealthIndicator implements HealthIndicator {
     @Override
     public Health health() {
         if (isHealthGood()) {
-            return Health.up().withDetail("JWT Status", "Token generation is Working").build();
+            return Health.up().withDetail("JWT Status", ResponseMessage.JWT_STATUS_SUCCESS).build();
         }
-        return Health.down().withDetail("JWT Status", "Token generation is failed").build();
+        return Health.down().withDetail("JWT Status", ResponseMessage.JWT_STATUS_FAILED).build();
     }
 }
